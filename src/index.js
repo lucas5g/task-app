@@ -24,75 +24,59 @@ const App = () => {
     if (destination.draggableId === source.droppableId && destination.index === source.index)
       return
 
-    //const column = data.columns[source.droppableId]
-    const start = data.columns[source.droppableId]
-    const finish = data.columns[destination.droppableId]
+
+    const start = data.find(r => r.id === source.droppableId)
+    const finish = data.find(r => r.id === destination.droppableId)
+    const column = data.find(r => r.id === source.droppableId)
+    const taskChange = start.tasks.find(r => r.id === draggableId)
 
     if (start === finish) {
-      const newTaksIds = Array.from(start.taskIds)
-      newTaksIds.splice(source.index, 1)
-      newTaksIds.splice(destination.index, 0, draggableId)
+      let newTaskIds = start.tasks.filter( r => {
+        return r.id !== draggableId
+      })
+      //newTaskIds = 
+      newTaskIds.splice(destination.index, 0, taskChange)
 
-      const newColumn = {
-        ...start,
-        taskIds: newTaksIds
-      }
-
-      const newData = {
-        ...data,
-        columns: {
-          ...data.columns,
-          [newColumn.id]: newColumn
+      const newData = data.filter( r => {
+        if(r.id === column.id){
+          r.tasks = newTaskIds
         }
-      }
-
+        return r
+      })
+      console.log('opa')
       setData(newData)
+
+      return;
     }
     
     //Moving from one list to another
-    const startTaskIds = Array.from(start.taskIds)
-    startTaskIds.splice(source.index, 1)
+    //console.log('column')
+
+    const startTaskIds = start.tasks.filter((r)=> r.id !== draggableId)
     
-    const newStart = {
-      ...start, 
-      taskIds: startTaskIds
-    }
+    const  finishTaskIds = finish.tasks.splice(destination.index, 0, taskChange)
 
-    const finishTaskIds = Array.from(finish.taskIds)
-    finishTaskIds.splice(destination.index, 0, draggableId)
-    const newFinish = {
-      ...finish,
-      taskIds: finishTaskIds
-    }
-
-    const newData = {
-      ...data,
-      columns:{
-        ...data.columns,
-        [newStart.id]:newStart,
-        [newFinish.id]:newFinish
+    const newStart = data.filter( r => {
+      if(r.id === column.id){
+        r.tasks = startTaskIds
       }
-    }
-
-    setData(newData)
-
-
+      return r
+    })
+    setData(newStart)
+    console.log('task_id', draggableId )
+    console.log('column_id', destination.droppableId)
+    return
+    /*** */
 
   }
-
-
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Container>
-        {console.log(data)}
-        {data.map(r => 
-          <Column key={r.id} />
+
+        {data.map(r =>
+          <Column key={r.id} id={r.id} title={r.title} tasks={r.tasks} />
         )}
-        {/*data.columnOrder.map(columnId => {
-          const column = data.columns[columnId]
-          const tasks = column.taskIds.map(taskId => data.tasks[taskId])
-          return <Column key={column.id} column={column} tasks={tasks} />
-        })*/}
+
       </Container>
     </DragDropContext>
 

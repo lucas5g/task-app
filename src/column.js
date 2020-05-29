@@ -26,15 +26,18 @@ const TaskList = styled.div`
 function Column(props) {
   return (
     <Container>
-      <Title>{props.column.title}</Title>
-      <Droppable droppableId={props.column.id}>
+      
+      <Title>{props.title}</Title>
+      <Droppable droppableId={props.id}>
         {(provided, snapshot) => (
           <TaskList
             ref={provided.innerRef}
             {...provided.droppableProps}
             isDraggingOver={snapshot.isDraggingOver}
           >
-            {props.tasks.map((task, index) => <Task key={task.id} task={task} index={index} />)}
+            {props.tasks.map((r, index) => 
+              <Task key={r.id} id={r.id} content={r.content} index={index} />
+            )}
             {provided.placeholder}
           </TaskList>
         )}

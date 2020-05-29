@@ -12,7 +12,9 @@ const initialData = [
     {
       id: 'column-2',
       title: 'In Progress',
-      tasks: [],
+      tasks: [
+          {id: 'task-5', content: 'Try change column'},  
+      ],
     },
     {
       id: 'column-3',
